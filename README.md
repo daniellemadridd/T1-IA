@@ -4,10 +4,10 @@ Este projeto consiste em um sistema de IA capaz de classificar estados de um tab
 ## Membros do Grupo
 -Danielle dos Reis Madrid<br>
 -Vitor Rafael Gonçalves<br>
-
+- Francisco Cassol Raymundo
 
 # Algoritmos usados :
-Árvore de Decisão - <br>
+Árvore de Decisão - Francisco<br>
 Random Forest - Danielle<br>
 K-NN - Danielle<br>
 SVM - Vitor<br>

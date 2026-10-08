@@ -1,0 +1,8 @@
+pandas
+numpy
+joblib
+streamlit
+matplotlib
+seaborn
+ipykernel
+scikit-learn==1.7.2

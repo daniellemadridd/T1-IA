@@ -67,8 +67,8 @@ st.markdown("""
     }
 
     .subtitle {
-        font-size: 1rem;
-        margin-bottom: 2rem;
+        font-size: 0.95rem;
+        margin-bottom: 1.25rem;
     }
 
     .section-label {
@@ -166,7 +166,19 @@ st.markdown("""
     .game-status {
         text-align: center;
         font-weight: 650;
-        margin: 1rem 0;
+        background: #e8f0e9;
+        border: 1px solid #d5e2d7;
+        border-radius: 10px;
+        color: #2e5942;
+        margin: 1rem 0 1.25rem;
+        padding: 0.7rem 1rem;
+    }
+
+    .game-meta {
+        color: #65736a;
+        font-size: 0.88rem;
+        margin: -0.35rem 0 0.5rem;
+        text-align: center;
     }
 
     .footer-note {
@@ -488,15 +500,6 @@ if "estatisticas" not in st.session_state:
 st.title("Jogo da Velha")
 
 st.markdown(
-    '<div class="subtitle">'
-    'Escolha um algoritmo, faça suas jogadas e acompanhe '
-    'as previsões dos modelos de Machine Learning.'
-    '</div>',
-    unsafe_allow_html=True
-)
-
-
-st.markdown(
     '<div class="section-label">01. ESCOLHA O ALGORITMO</div>',
     unsafe_allow_html=True
 )
@@ -532,19 +535,32 @@ st.caption(
     f"Modelo selecionado: {st.session_state.algoritmo}"
 )
 
-st.divider()
-
+estado = verificar_estado(st.session_state.tabuleiro)
+mensagens = {
+    "TEM_JOGO": "Sua vez de jogar",
+    "X_VENCEU": "Você venceu!",
+    "O_VENCEU": "O computador venceu!",
+    "EMPATE": "Empate!"
+}
 
 st.markdown(
-    '<div class="section-label">02. PARTIDA</div>',
+    f'<div class="game-status">{mensagens[estado]}</div>',
     unsafe_allow_html=True
 )
 
-estado = verificar_estado(st.session_state.tabuleiro)
+st.markdown(
+    '<div class="game-meta">Clique em uma casa vazia para jogar</div>',
+    unsafe_allow_html=True
+)
 
-esquerda, centro, direita = st.columns([1, 3, 1])
+st.markdown(
+    '<div class="section-label">02. JOGO</div>',
+    unsafe_allow_html=True
+)
 
-with centro:
+coluna_jogo, coluna_analise = st.columns([3, 2], gap="large")
+
+with coluna_jogo:
     for linha in range(3):
         colunas = st.columns(3, gap="small")
 
@@ -569,52 +585,35 @@ with centro:
                     args=(posicao,)
                 )
 
-    mensagens = {
-        "TEM_JOGO": "Sua vez de jogar — X",
-        "X_VENCEU": "Você venceu!",
-        "O_VENCEU": "O computador venceu!",
-        "EMPATE": "Empate!"
-    }
-
-    st.markdown(
-        f'<div class="game-status">{mensagens[estado]}</div>',
-        unsafe_allow_html=True
-    )
-
     st.button(
         "Nova partida",
         use_container_width=True,
         on_click=nova_partida
     )
 
-if st.session_state.aviso:
-    st.warning(st.session_state.aviso)
+    if st.session_state.aviso:
+        st.warning(st.session_state.aviso)
 
-st.divider()
+with coluna_analise:
+    st.markdown(
+        '<div class="section-label">03. ANÁLISE</div>',
+        unsafe_allow_html=True
+    )
 
-st.markdown(
-    '<div class="section-label">03. ANÁLISE DO MODELO</div>',
-    unsafe_allow_html=True
-)
+    resultado = st.session_state.ultima_previsao
 
-resultado = st.session_state.ultima_previsao
-
-if resultado:
-    col1, col2 = st.columns(2)
-
-    with col1:
+    if resultado:
         st.caption("Previsão da IA")
         st.code(resultado["previsao"], language=None)
 
-    with col2:
         st.caption("Estado real")
         st.code(resultado["real"], language=None)
 
-    if resultado["acertou"]:
-        st.success("A previsão foi correta.")
+        if resultado["acertou"]:
+            st.success("A previsão foi correta.")
+        else:
+            st.error("A previsão foi diferente do estado real.")
     else:
-        st.error("A previsão foi diferente do estado real.")
-else:
-    st.caption(
-        "Faça uma jogada para visualizar a classificação."
-    )
+        st.caption(
+            "Faça uma jogada para visualizar a classificação."
+        )
